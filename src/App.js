@@ -1,102 +1,97 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import TaskList from './components/TaskList';
 import './App.css';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [inputText, setInputText] = useState('');
-  const [filter, setFilter] = useState('All');
+  const [taskInput, setTaskInput] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [tasks, setTasks] = useState([]); 
+  const [filter, setFilter] = useState('All'); // For filtering tasks
 
-  useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
-    if (storedTasks) {
-      setTasks(storedTasks);
+  // Add task 
+  const addTask = async () => {
+    if (taskInput.trim()) {
+      const newTask = {
+        title: taskInput,
+        completed: false,
+        dueDate: dueDate || null, 
+      };
+
+      //add task to api
+      await fetch('https://jsonplaceholder.typicode.com/todos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTask),
+      });
+
+      setTasks([...tasks, newTask]);
+
+      setTaskInput('');
+      setDueDate('');
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  const addTask = () => {
-    if (inputText.trim() !== '') {
-      setTasks([
-        ...tasks,
-        { id: Date.now(), text: inputText, completed: false }
-      ]);
-      setInputText('');
-    }
   };
 
-  const toggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+  // Delete task
+  const deleteTask = async (id) => {
+    await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+      method: 'DELETE',
+    });
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  // Toggle task completion
+  const toggleComplete = async (id) => {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === id) {
+        task.completed = !task.completed;
+        fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completed: task.completed }),
+        });
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
   };
 
-  const editTask = (id, newText) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, text: newText } : task
-      )
-    );
-  };
-
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === 'All') return true;
-    return filter === 'Completed' ? task.completed : !task.completed;
+  const filteredTasks = tasks.filter(task => {
+    if (filter === 'Completed') return task.completed;
+    if (filter === 'Incomplete') return !task.completed;
+    return true; 
   });
 
   return (
-    <div className="App">
+    <div className="app">
       <h1>Interactive To-Do List</h1>
-      <div>
+      <div className="input-section">
         <input
           type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
           placeholder="Enter a task"
+          value={taskInput}
+          onChange={(e) => setTaskInput(e.target.value)}
         />
-        <button className="add-task-btn" onClick={addTask}>
-          Add Task
-        </button>
+        <input
+          type="text"
+          placeholder="mm/dd/yyyy"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+        <button onClick={addTask}>Add Task</button>
       </div>
       <div className="filters">
-        {['All', 'Completed', 'Incomplete'].map((status) => (
-          <button
-            key={status}
-            className={filter === status ? 'active' : ''}
-            onClick={() => setFilter(status)}
-          >
-            {status}
-          </button>
-        ))}
+        <button onClick={() => setFilter('All')}>All</button>
+        <button onClick={() => setFilter('Completed')}>Completed</button>
+        <button onClick={() => setFilter('Incomplete')}>Incomplete</button>
       </div>
-      <ul className="task-list">
-        {filteredTasks.map((task) => (
-          <li key={task.id} className={task.completed ? 'completed' : ''}>
-            <input
-              type="checkbox"
-              checked={task.completed}
-              onChange={() => toggleComplete(task.id)}
-            />
-            <span
-              onClick={() => {
-                const newText = prompt('Edit Task:', task.text);
-                if (newText) editTask(task.id, newText);
-              }}
-            >
-              {task.text}
-            </span>
-            <button onClick={() => deleteTask(task.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <TaskList
+        tasks={filteredTasks}
+        onDelete={deleteTask}
+        onToggleComplete={toggleComplete}
+      />
     </div>
   );
 }

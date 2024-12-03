@@ -1,0 +1,97 @@
+.task-list {
+    margin-top: 20px;
+  }
+  
+  .task-item {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.3s ease;
+  }
+  
+  .task-item:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .task-text {
+    flex-grow: 1;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  
+  .completed {
+    text-decoration: line-through;
+    color: #888;
+  }
+  
+  .due-date {
+    font-size: 0.9em;
+    color: #666;
+  }
+  
+  .delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff4d4d;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .filters {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .filters button {
+    padding: 8px 12px;
+    font-size: 1rem;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .filters button:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .filters button:active {
+    background-color: #ddd;
+  }
+  
+  .input-section input {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+  }
+  
+  .input-section button {
+    padding: 10px 15px;
+    margin-left: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .input-section button:hover {
+    background-color: #218838;
+  }
+  
