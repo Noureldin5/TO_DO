@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'; 
 import TaskList from './components/TaskList';
 import './App.css';
 
@@ -8,7 +9,7 @@ function App() {
   const [tasks, setTasks] = useState([]); 
   const [filter, setFilter] = useState('All'); // For filtering tasks
 
-  // Add task 
+  // Add task and send it to the API
   const addTask = async () => {
     if (taskInput.trim()) {
       const newTask = {
@@ -17,7 +18,6 @@ function App() {
         dueDate: dueDate || null, 
       };
 
-      //add task to api
       await fetch('https://jsonplaceholder.typicode.com/todos', {
         method: 'POST',
         headers: {
@@ -28,6 +28,7 @@ function App() {
 
       setTasks([...tasks, newTask]);
 
+      // Clear input fields
       setTaskInput('');
       setDueDate('');
     }
@@ -56,6 +57,24 @@ function App() {
     });
 
     setTasks(updatedTasks);
+  };
+
+  const handleDragEnd = (result) => {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return; 
+    }
+
+    if (destination.index === source.index) {
+      return; 
+    }
+
+    const reorderedTasks = Array.from(tasks);
+    const [movedTask] = reorderedTasks.splice(source.index, 1);
+    reorderedTasks.splice(destination.index, 0, movedTask);
+
+    setTasks(reorderedTasks);
   };
 
   const filteredTasks = tasks.filter(task => {
@@ -87,11 +106,43 @@ function App() {
         <button onClick={() => setFilter('Completed')}>Completed</button>
         <button onClick={() => setFilter('Incomplete')}>Incomplete</button>
       </div>
-      <TaskList
-        tasks={filteredTasks}
-        onDelete={deleteTask}
-        onToggleComplete={toggleComplete}
-      />
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="task-list">
+          {(provided) => (
+            <div
+              className="task-list"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {filteredTasks.length === 0 ? <p>No tasks to display</p> : null}
+              {filteredTasks.map((task, index) => (
+                <Draggable key={task.id} draggableId={String(task.id)} index={index}>
+                  {(provided) => (
+                    <div
+                      className={`task-item ${task.completed ? 'completed' : ''}`}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={task.completed}
+                        onChange={() => toggleComplete(task.id)}
+                      />
+                      <span className="task-text">{task.title}</span>
+                      {task.dueDate && <span className="due-date">{task.dueDate}</span>}
+                      <button className="delete-btn" onClick={() => deleteTask(task.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 }
