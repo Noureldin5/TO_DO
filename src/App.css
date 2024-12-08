@@ -1,115 +1,154 @@
+/* General Styles */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
   margin: 0;
   padding: 0;
+  background-color: #f0f0f0;
+  color: #333;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
 }
 
-.App {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+.app {
+  background-color: #fff;
   width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #444;
   margin-bottom: 20px;
 }
 
+/* Input Section */
 .input-section {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.input-section input[type='text'],
-.input-section input[type='date'] {
-  flex: 1;
-  padding: 8px;
+.input-section input {
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 14px;
 }
 
-.add-btn {
-  background-color: #007bff;
-  color: white;
+.input-section button {
+  padding: 10px;
+  background-color: #28a745;
+  color: #fff;
   border: none;
-  padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
 }
 
-.add-btn:hover {
-  background-color: #0056b3;
+.input-section button:hover {
+  background-color: #218838;
 }
 
-.filter-section {
-  text-align: center;
+/* Filters */
+.filters {
+  display: flex;
+  justify-content: space-around;
   margin-bottom: 20px;
 }
 
-.filter-section button {
-  margin: 0 5px;
+.filters button {
   padding: 8px 12px;
-  border: none;
-  background: #f4f4f4;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.filter-section button:hover {
-  background: #007bff;
+  background-color: #007bff;
   color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
 }
 
+.filters button:hover {
+  background-color: #0056b3;
+}
+
+.filters button.active {
+  background-color: #0056b3;
+}
+
+/* Task List */
 .task-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .task-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 10px;
-  background: #f9f9f9;
-  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  border: 1px solid #e0e0e0;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
-.task-item.completed span {
+.task-item:hover {
+  background-color: #f1f1f1;
+  transform: translateY(-2px);
+}
+
+.task-item.completed {
+  background-color: #e6ffe6;
   text-decoration: line-through;
-  color: #888;
+  color: #6c757d;
+}
+
+.task-item.overdue {
+  background-color: #ffe6e6;
+  border: 1px solid #ff4d4d;
+}
+
+.task-item input[type='checkbox'] {
+  margin-right: 10px;
+}
+
+.task-text {
+  flex-grow: 1;
+  margin: 0 10px;
 }
 
 .due-date {
-  font-size: 0.8rem;
   color: #666;
-}
-
-.due-date.overdue {
-  color: red;
+  font-size: 12px;
+  margin-right: 10px;
 }
 
 .delete-btn {
-  background: #ff4d4d;
-  color: white;
+  background-color: #dc3545;
+  color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
 }
 
 .delete-btn:hover {
-  background: #cc0000;
+  background-color: #c82333;
+}
+
+/* No Tasks Message */
+.task-list p {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
 }
