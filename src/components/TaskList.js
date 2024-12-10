@@ -1,23 +1,18 @@
+// TaskList.js
 import React from 'react';
-import './TaskList.css';
+import Task from './Task'; // Import Task component
 
-function TaskList({ tasks, onDelete, onToggleComplete }) {
+function TaskList({ tasks, toggleComplete, deleteTask, filteredTasks }) {
   return (
     <div className="task-list">
-      {tasks.length === 0 ? <p>No tasks to display</p> : null}
-      {tasks.map(task => (
-        <div className={`task-item ${task.completed ? 'completed' : ''}`} key={task.id}>
-          <input
-            type="checkbox"
-            checked={task.completed}
-            onChange={() => onToggleComplete(task.id)}
-          />
-          <span className="task-text">{task.title}</span>
-          {task.dueDate && <span className="due-date">{task.dueDate}</span>}
-          <button className="delete-btn" onClick={() => onDelete(task.id)}>
-            Delete
-          </button>
-        </div>
+      {filteredTasks.length === 0 && <p>No tasks to display</p>}
+      {filteredTasks.map((task) => (
+        <Task
+          key={task.id}
+          task={task} // Passing task as a prop to Task component
+          toggleComplete={toggleComplete}
+          deleteTask={deleteTask}
+        />
       ))}
     </div>
   );

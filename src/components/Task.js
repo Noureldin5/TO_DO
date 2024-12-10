@@ -1,24 +1,35 @@
+// Task.js
 import React from 'react';
 
-function Task({ task, deleteTask, toggleCompletion }) {
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
-
+function Task({ task, toggleComplete, deleteTask }) {
   return (
-    <li className={`task-item ${task.completed ? 'completed' : ''}`}>
-      <div>
-        <span onClick={() => toggleCompletion(task.id)} className="task-title">
-          {task.title}
+    <div
+      className={`task-item ${task.completed ? 'completed' : ''} ${
+        task.dueDate &&
+        new Date(task.dueDate).getTime() < Date.now() &&
+        !task.completed
+          ? 'overdue'
+          : ''
+      }`}
+    >
+      <input
+        type="checkbox"
+        checked={task.completed}
+        onChange={() => toggleComplete(task.id)}
+      />
+      <span className="task-text">{task.title}</span>
+      {task.dueDate && (
+        <span className="due-date">
+          {new Date(task.dueDate).toLocaleString()}
         </span>
-        {task.dueDate !== 'No due date' && (
-          <span className={`due-date ${isOverdue ? 'overdue' : ''}`}>
-            Due: {task.dueDate}
-          </span>
-        )}
-      </div>
-      <button className="delete-btn" onClick={() => deleteTask(task.id)}>
+      )}
+      <button
+        className="delete-btn"
+        onClick={() => deleteTask(task.id)}
+      >
         Delete
       </button>
-    </li>
+    </div>
   );
 }
 

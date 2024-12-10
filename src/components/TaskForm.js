@@ -1,33 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const TaskForm = ({ addTask }) => {
-  const [task, setTask] = useState("");
-
-  // Handle changes to the input field
-  const handleInputChange = (e) => {
-    setTask(e.target.value);
-  };
-
-  // Handle form submission
-  const handleFormSubmit = (e) => {
-    e.preventDefault(); // Prevents the form from refreshing the page
-    if (task.trim()) {
-      addTask(task); // Pass the task to the parent component
-      setTask(""); // Reset the input field after submitting
-    }
-  };
-
+function TaskForm({ taskInput, setTaskInput, dueDate, setDueDate, addTask }) {
   return (
-    <form onSubmit={handleFormSubmit}>
+    <div className="input-section">
       <input
         type="text"
-        value={task}
-        onChange={handleInputChange}
         placeholder="Enter a task"
+        value={taskInput}
+        onChange={(e) => setTaskInput(e.target.value)}
       />
-      <button type="submit">Add Task</button>
-    </form>
+      <input
+        type="datetime-local"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+      />
+      <button onClick={() => addTask(taskInput)}>Add Task</button>
+    </div>
   );
-};
+}
 
 export default TaskForm;
